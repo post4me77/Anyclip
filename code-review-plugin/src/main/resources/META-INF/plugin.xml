@@ -1,0 +1,15 @@
+<idea-plugin>
+  <id>com.anyclip.cloud-test-review</id>
+  <name>Cloud Test Review</name>
+  <version>1.0.0</version>
+  <vendor>Anyclip Homework</vendor>
+  <description>Reviews selected test code against six quality rules using Mistral AI.</description>
+  <idea-version since-build="252"/>
+  <depends>com.intellij.modules.platform</depends>
+  <actions>
+    <action id="Anyclip.ReviewSelectedTests" class="com.anyclip.review.ReviewAction"
+            text="Проверить качество тестов (AI)" description="Ревью выделенного кода через Mistral">
+      <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+    </action>
+  </actions>
+</idea-plugin>

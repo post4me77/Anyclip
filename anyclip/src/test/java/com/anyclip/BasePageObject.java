@@ -1,8 +1,5 @@
 package com.anyclip;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -10,25 +7,50 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public abstract class BasePageObject {
-	protected static WebDriver driver;
+	private static final int WAIT_TIMEOUT_SECONDS = 15;
+	private static final int POLLING_INTERVAL_MILLIS = 200;
+	protected final WebDriver driver;
+	private final WebDriverWait wait;
 
 	public BasePageObject(WebDriver driver) {
-		super();
-		BasePageObject.driver = driver;
+		if (driver == null) {
+			throw new IllegalArgumentException("Driver must not be null");
+		}
+		this.driver = driver;
+		this.wait = new WebDriverWait(driver, WAIT_TIMEOUT_SECONDS, POLLING_INTERVAL_MILLIS);
 	}
 
-	public static void waitUntilElementIsLoaded(WebElement element) throws IOException, InterruptedException {
-		new WebDriverWait(driver, 15).until(ExpectedConditions.visibilityOf(element));
+	public void waitUntilElementIsLoaded(WebElement element) {
+		wait.until(ExpectedConditions.visibilityOf(element));
+	}
+
+	protected WebElement waitUntilElementIsClickable(WebElement element) {
+		return wait.until(ExpectedConditions.elementToBeClickable(element));
 	}
 
 	public void setWindowsSize(int x, int y) {
-		Dimension newSize = new Dimension(x, y);
-		// Resize current window to the set dimension
-		driver.manage().window().setSize(newSize);
+		if (x <= 0 || y <= 0) {
+			throw new IllegalArgumentException("Window dimensions must be positive");
+		}
+		driver.manage().window().setSize(new Dimension(x, y));
 	}
 
+	public void switchToNewTab() {
+		final String currentWindow = driver.getWindowHandle();
+		String targetWindow = wait.until(webDriver -> {
+			for (String handle : webDriver.getWindowHandles()) {
+				if (!handle.equals(currentWindow)) {
+					return handle;
+				}
+			}
+			return null;
+		});
+		driver.switchTo().window(targetWindow);
+	}
+
+	/** @deprecated Use {@link #switchToNewTab()} instead. */
+	@Deprecated
 	public void swithOnNewTab() {
-		ArrayList<String> tabs2 = new ArrayList<String>(driver.getWindowHandles());
-		driver.switchTo().window(tabs2.get(1));
+		switchToNewTab();
 	}
 }

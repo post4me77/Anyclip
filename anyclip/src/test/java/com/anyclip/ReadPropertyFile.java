@@ -1,41 +1,37 @@
 package com.anyclip;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
 public class ReadPropertyFile {
-	private static Properties prop;
-	private final String propertyFilePath = "src/test/java/shopping/enviroment.properties";
+	private static final Properties prop = loadProperties();
 
 	public ReadPropertyFile() {
-		prop = new Properties();
-		File file = new File(propertyFilePath);
-		FileInputStream ip;
-		try {
-			ip = new FileInputStream(file);
+	}
 
-			try {
-				prop.load(ip);
-			} catch (IOException e) {
-				e.printStackTrace();
+	private static Properties loadProperties() {
+		Properties properties = new Properties();
+		try (InputStream input = ReadPropertyFile.class.getResourceAsStream("/enviroment.properties")) {
+			if (input == null) {
+				throw new IllegalStateException("Missing test resource: enviroment.properties");
 			}
-
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
+			properties.load(input);
+			return properties;
+		} catch (IOException e) {
+			throw new IllegalStateException("Cannot load enviroment.properties", e);
 		}
 	}
 	
 	public static List<Integer> getVallueWithComma(String value) {
 		List<Integer> list = new ArrayList<Integer>();
-		String implicitlyWait = prop.getProperty(value);
-		List<String> elephantList = Arrays.asList(implicitlyWait.split(","));
-		for (String item : elephantList) {
+		String configuredValue = prop.getProperty(value);
+		if (configuredValue == null) {
+			throw new IllegalArgumentException("Missing configuration property: " + value);
+		}
+		for (String item : configuredValue.split(",")) {
 			list.add(Integer.parseInt(item.trim()));
 		}
 		return list;

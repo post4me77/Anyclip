@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Anyclip.iml" filepath="$PROJECT_DIR$/.idea/Anyclip.iml" />
-      <module fileurl="file://$PROJECT_DIR$/anyclip/anyclip.iml" filepath="$PROJECT_DIR$/anyclip/anyclip.iml" />
     </modules>
   </component>
 </project>

@@ -9,8 +9,5 @@
         <module name="anyclip" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="anyclip" target="1.5" />
-    </bytecodeTargetLevel>
   </component>
 </project>
